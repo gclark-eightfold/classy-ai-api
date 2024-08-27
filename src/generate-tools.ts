@@ -11,6 +11,10 @@ interface OpenAPISpec {
 
 const server = apiSpec.servers[0]?.url ?? "";
 
+// Get arguments from the command line
+const args = process.argv.slice(2);
+const debug = args.includes("--debug");
+
 function replaceRefsAndClean(spec: any, fullSpec: any): any {
   if (typeof spec !== "object" || spec === null) return spec;
 
@@ -134,24 +138,25 @@ function openapiToTools(openapiSpec: OpenAPISpec): string {
           }
         })`;
 
-      // const debugToolDefinition = `
-      //   ${functionName}: tool({
-      //     description: "${desc}",
-      //     parameters: jsonSchema<any>({ type: "object", properties: ${JSON.stringify(schemaProps)}}),
-      //     execute: async (args) => {
-      //       const url = \`${server}${pathParams}${urlParams ? `?${urlParams}` : ""}\`;
-      //       return {
-      //         url,
-      //         method: '${method.toUpperCase()}',
-      //         headers: {
-      //           'Content-Type': 'application/json',
-      //           // Add other headers as necessary (e.g., Authorization)
-      //         },
-      //         ${fetchBody}
-      //       };
-      //     }
-      //   })`;
-      tools.push(toolDefinition);
+      const debugToolDefinition = `
+        ${functionName}: tool({
+          description: "${desc}",
+          parameters: jsonSchema<any>({ type: "object", properties: ${JSON.stringify(schemaProps)}}),
+          execute: async (args) => {
+            const url = \`${server}${pathParams}${urlParams ? `?${urlParams}` : ""}\`;
+            return {
+              url,
+              method: '${method.toUpperCase()}',
+              headers: {
+                'Content-Type': 'application/json',
+                // Add other headers as necessary (e.g., Authorization)
+              },
+              ${fetchBody}
+            };
+          }
+        })`;
+
+      tools.push(debug ? debugToolDefinition : toolDefinition);
     }
   }
 
@@ -162,7 +167,4 @@ function openapiToTools(openapiSpec: OpenAPISpec): string {
 }
 
 const tools = openapiToTools(apiSpec);
-fs.writeFileSync(
-  path.join(import.meta.dirname, "../generated/tools.ts"),
-  tools,
-);
+fs.writeFileSync(path.join(import.meta.dirname, "../dist/tools.ts"), tools);
