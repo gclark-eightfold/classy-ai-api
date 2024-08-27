@@ -8,7 +8,6 @@ const config = {
     "@typescript-eslint"
   ],
   "extends": [
-    "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked"
   ],

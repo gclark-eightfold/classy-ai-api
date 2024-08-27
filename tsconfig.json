@@ -15,12 +15,11 @@
     "checkJs": true,
 
     /* Bundled projects */
-    "lib": ["dom", "dom.iterable", "ES2022"],
+    "lib": ["ES2022"],
     "noEmit": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "jsx": "preserve",
-    "plugins": [{ "name": "next" }],
     "incremental": true,
 
     /* Path Aliases */
@@ -31,12 +30,10 @@
   },
   "include": [
     ".eslintrc.cjs",
-    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",
     "**/*.js",
-    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

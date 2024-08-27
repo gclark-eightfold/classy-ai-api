@@ -1,7 +1,7 @@
 import { openai } from "@ai-sdk/openai";
 import { generateText } from "ai";
 
-import { tools } from "../generated/tools";
+import { tools } from "../dist/tools";
 
 async function main() {
   const result = await generateText({

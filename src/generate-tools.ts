@@ -3,7 +3,7 @@
 
 import fs from "fs";
 import path from "path";
-import apiSpec from "../apiv2-public.json";
+import apiSpec from "./apiv2-public.json";
 
 interface OpenAPISpec {
   paths: Record<string, Record<string, any>>;
@@ -116,41 +116,41 @@ function openapiToTools(openapiSpec: OpenAPISpec): string {
         ? `body: JSON.stringify(args.requestBody),`
         : "";
 
-      //       const toolDefinition = `
-      // ${functionName}: tool({
-      //   description: "${desc}",
-      //   parameters: jsonSchema<${schemaType}>({ type: "object", properties: ${JSON.stringify(schemaProps)}}),
-      //   execute: async (args) => {
-      //     const url = \`${pathParams}${urlParams ? `?${urlParams}` : ""}\`;
-      //     const response = await fetch(url, {
+      const toolDefinition = `
+        ${functionName}: tool({
+          description: "${desc}",
+          parameters: jsonSchema<any>({ type: "object", properties: ${JSON.stringify(schemaProps)}}),
+          execute: async (args) => {
+            const url = \`${server}${pathParams}${urlParams ? `?${urlParams}` : ""}\`;
+            const response = await fetch(url, {
+                method: '${method.toUpperCase()}',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add other headers as necessary (e.g., Authorization)
+                },
+                ${fetchBody}
+            });
+            return response.json();
+          }
+        })`;
+
+      // const debugToolDefinition = `
+      //   ${functionName}: tool({
+      //     description: "${desc}",
+      //     parameters: jsonSchema<any>({ type: "object", properties: ${JSON.stringify(schemaProps)}}),
+      //     execute: async (args) => {
+      //       const url = \`${server}${pathParams}${urlParams ? `?${urlParams}` : ""}\`;
+      //       return {
+      //         url,
       //         method: '${method.toUpperCase()}',
       //         headers: {
-      //             'Content-Type': 'application/json',
-      //             // Add other headers as necessary (e.g., Authorization)
+      //           'Content-Type': 'application/json',
+      //           // Add other headers as necessary (e.g., Authorization)
       //         },
       //         ${fetchBody}
-      //     });
-      //     return response.json();
-      //   }
-      // })`;
-      const toolDefinition = `
-${functionName}: tool({
-  description: "${desc}",
-  parameters: jsonSchema<any>({ type: "object", properties: ${JSON.stringify(schemaProps)}}),
-  execute: async (args) => {
-    const url = \`${server}${pathParams}${urlParams ? `?${urlParams}` : ""}\`;
-    const fetchArgs = {
-      url,
-      method: '${method.toUpperCase()}',
-      headers: {
-        'Content-Type': 'application/json',
-        // Add other headers as necessary (e.g., Authorization)
-      },
-      ${fetchBody}
-    };
-    return fetchArgs;
-  }
-})`;
+      //       };
+      //     }
+      //   })`;
       tools.push(toolDefinition);
     }
   }
