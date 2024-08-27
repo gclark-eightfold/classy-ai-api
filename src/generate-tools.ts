@@ -17,7 +17,9 @@ const server = apiSpec.servers[0]?.url ?? "";
 const args = process.argv.slice(2);
 const debug = args.includes("--debug");
 
-function replaceRefsAndClean(spec: any, fullSpec: any): any {
+// TODO: Make this file type-safe
+
+function replaceRefsAndClean(spec: any, fullSpec: any) {
   if (typeof spec !== "object" || spec === null) return spec;
 
   if (spec.$ref) {
