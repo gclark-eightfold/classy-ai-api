@@ -5,6 +5,8 @@ import fs from "fs";
 import path from "path";
 import apiSpec from "./apiv2-public.json";
 
+import prettier from "prettier";
+
 interface OpenAPISpec {
   paths: Record<string, Record<string, any>>;
 }
@@ -36,6 +38,11 @@ function replaceRefsAndClean(spec: any, fullSpec: any): any {
   for (const key in spec) {
     // Skip "example" properties
     if (key === "example") continue;
+    if (key === "deprecated") continue;
+    if (key === "type" && spec[key] === "int") {
+      newSpec[key] = "integer";
+      continue;
+    }
     if (key === "nullable") {
       if (spec[key] === true) {
         // Handle "nullable: true" by modifying the type field to include "null"
@@ -167,4 +174,8 @@ function openapiToTools(openapiSpec: OpenAPISpec): string {
 }
 
 const tools = openapiToTools(apiSpec);
-fs.writeFileSync(path.join(import.meta.dirname, "../dist/tools.ts"), tools);
+const formattedTools = await prettier.format(tools, { parser: "typescript" });
+fs.writeFileSync(
+  path.join(import.meta.dirname, "../dist/tools.ts"),
+  formattedTools,
+);

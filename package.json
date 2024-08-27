@@ -4,9 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsx ./src/generate-tools.ts && npm run format",
-    "build:debug": "tsx ./src/generate-tools.ts --debug && npm run format",
-    "format": "prettier --write .",
+    "build": "tsx ./src/generate-tools.ts",
+    "build:debug": "tsx ./src/generate-tools.ts --debug",
     "test": "dotenv -e .env tsx ./src/test.ts"
   },
   "dependencies": {
