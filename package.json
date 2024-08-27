@@ -7,7 +7,7 @@
     "build": "tsx ./src/generate-tools.ts && npm run format",
     "build:debug": "tsx ./src/generate-tools.ts --debug && npm run format",
     "format": "prettier --write .",
-    "test": "dotenv -e .env tsx ./scripts/test.ts"
+    "test": "dotenv -e .env tsx ./src/test.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.54",
